@@ -1,7 +1,7 @@
 import './scss/styles.scss';
-import { Catalog } from './src/components/Models/Catalog';
-import { Cart } from './src/components/Models/Cart';
-import { Buyer } from './src/components/Models/Buyer';
+import { Catalog } from './components/Models/Catalog';
+import { Cart } from './components/Models/Cart';
+import { Buyer } from './components/Models/Buyer';
 import { apiProducts } from './utils/data';
 import { Api } from './components/base/Api';
 import { KioskApi } from './components/base/KioskApi';
@@ -22,7 +22,7 @@ kioskApi.getProducts()
   .catch((error) => {
     console.error('Ошибка загрузки товаров:', error);
   });
-  
+
 buyer.setData({
   payment: 'card',
   address: 'Teststraße 1',

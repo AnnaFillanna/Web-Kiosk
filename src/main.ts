@@ -4,7 +4,7 @@ import { Cart } from './components/Models/Cart';
 import { Buyer } from './components/Models/Buyer';
 import { apiProducts } from './utils/data';
 import { Api } from './components/base/Api';
-import { KioskApi } from './components/base/KioskApi';
+import { KioskApi } from './components/KioskApi';
 import { API_URL } from './utils/constants';
 
 const api = new Api(API_URL);
@@ -32,6 +32,27 @@ buyer.setData({
 
 console.log('Данные покупателя:', buyer.getData());
 console.log('Ошибки:', buyer.validate());
+
+buyer.setData({
+  email: '',
+});
+
+console.log(
+  'Ошибки при незаполненном email:',
+  buyer.validate()
+);
+
+buyer.clear();
+
+console.log(
+  'Данные покупателя после очистки:',
+  buyer.getData()
+);
+
+console.log(
+  'Ошибки после очистки:',
+  buyer.validate()
+);
 
 console.log('Каталог:', catalog.getItems());
 console.log('Первый товар:', catalog.getItem(apiProducts.items[0].id));

@@ -3,7 +3,7 @@ import {
   IProductsResponse,
   IOrder,
   IOrderResponse,
-} from '../../types';
+} from '../types';
 
 export class KioskApi {
   constructor(private api: IApi) {}

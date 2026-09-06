@@ -62,16 +62,17 @@ Presenter ↔ Model
 ### Схема моделей данных
 
 ![Схема типов и моделей данных](docs/architecture.jpg)
+
 ## Данные и типы
 
 Основные типы приложения описывают товар, покупателя и данные, которыми приложение обменивается с сервером.
 
 ### `TPayment`
 
-Тип доступных способов оплаты. Пустая строка означает, что способ оплаты ещё не выбран.
+`TPayment` содержит допустимые способы оплаты. Пустая строка используется отдельно как начальное значение поля `payment` в данных покупателя.
 
 ```ts
-type TPayment = "card" | "cash" | "";
+type TPayment = "card" | "cash";
 ```
 
 ### `IProduct`
@@ -102,17 +103,25 @@ interface IProduct {
 
 ```ts
 interface IBuyer {
-  payment: TPayment;
+  payment: TPayment | "";
   email: string;
   phone: string;
   address: string;
 }
 ```
 
-- `payment: TPayment` — выбранный способ оплаты.
+- `payment: TPayment | ''` — выбранный способ оплаты или пустая строка, если способ ещё не выбран.
 - `email: string` — электронная почта покупателя.
 - `phone: string` — номер телефона покупателя.
 - `address: string` — адрес доставки.
+
+### `TBuyerErrors`
+
+Тип объекта с сообщениями об ошибках заполнения данных покупателя.
+
+```ts
+type TBuyerErrors = Partial<Record<keyof IBuyer, string>>;
+```
 
 ### `IProductsResponse`
 
@@ -241,7 +250,7 @@ constructor();
 
 #### Поля
 
-- `payment: TPayment` — способ оплаты; начальное значение `''`.
+- `payment: TPayment | ''` — выбранный способ оплаты; начальное значение `''`.
 - `address: string` — адрес доставки.
 - `email: string` — электронная почта.
 - `phone: string` — номер телефона.
@@ -251,7 +260,7 @@ constructor();
 - `setData(data: Partial<IBuyer>): void` — обновляет переданные поля, сохраняя остальные значения.
 - `getData(): IBuyer` — возвращает сохранённые данные покупателя.
 - `clear(): void` — возвращает все поля к начальным значениям.
-- `validate(): Partial<Record<keyof IBuyer, string>>` — возвращает объект с сообщениями об ошибках для незаполненных полей.
+- `validate(): TBuyerErrors`
 
 Пример результата валидации:
 

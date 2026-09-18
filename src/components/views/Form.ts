@@ -53,7 +53,4 @@ export class Form extends Component<IForm> {
   set errors(value: string[]) {
     this.errorsElement.textContent = value.join(", ");
   }
-  reset(): void {
-    (this.container as HTMLFormElement).reset();
-  }
 }

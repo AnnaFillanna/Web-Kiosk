@@ -2,14 +2,6 @@ import { Card } from "./Card";
 import { categoryMap } from "../../../utils/constants";
 type CategoryKey = keyof typeof categoryMap;
 
-// interface ICardPreview {
-//     title: string;
-//     price: number | null;
-//     image: string;
-//     category: string;
-//     description: string;
-// }
-
 interface ICardPreviewActions {
   onClick: () => void;
 }
@@ -34,11 +26,11 @@ export class CardPreview extends Card {
   }
 
   set image(value: string) {
-    this.setImage(
-      this.imageElement,
-      value,
-      this.titleElement.textContent || "",
-    );
+    this.setImage(this.imageElement, value);
+  }
+
+  set imageAlt(value: string) {
+    this.imageElement.alt = value;
   }
 
   set category(value: string) {

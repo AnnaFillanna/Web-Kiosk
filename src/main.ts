@@ -7,13 +7,16 @@ import { EventEmitter } from "./components/base/Events";
 import { Catalog } from "./components/Models/Catalog";
 import { Cart } from "./components/Models/Cart";
 import { Buyer } from "./components/Models/Buyer";
-import { IProduct, TPayment, IOrder, IOrderResponse } from "./types";
+import { IProduct, TPayment, IOrder } from "./types";
 import { Api } from "./components/base/Api";
+import { KioskApi } from "./components/KioskApi";
 import { API_URL, CDN_URL } from "./utils/constants";
 import { Modal } from "./components/views/Modal";
 import { Basket } from "./components/views/Basket";
 import { CardBasket } from "./components/views/Card/CardBasket";
-import { Form } from "./components/views/Form";
+import { OrderForm } from "./components/views/OrderForm";
+import { ContactsForm } from "./components/views/ContactsForm";
+import { Success } from "./components/views/Success";
 const headerElement = document.querySelector<HTMLElement>(".header")!;
 const galleryElement = document.querySelector<HTMLElement>(".gallery")!;
 const cardCatalogTemplate =
@@ -31,12 +34,34 @@ const modalElement = document.querySelector<HTMLElement>("#modal-container")!;
 const gallery = new Gallery(galleryElement);
 const events = new EventEmitter();
 const api = new Api(API_URL);
+const kioskApi = new KioskApi(api);
 const catalog = new Catalog(events);
 const cart = new Cart(events);
 const buyer = new Buyer(events);
-
 const modal = new Modal(modalElement);
+const previewElement = cardPreviewTemplate.content
+  .querySelector<HTMLElement>(".card")!
+  .cloneNode(true) as HTMLElement;
 
+const preview = new CardPreview(previewElement, {
+  onClick: () => {
+    events.emit("preview:action");
+  },
+});
+
+events.on("preview:action", () => {
+  const item = catalog.getSelectedProduct();
+
+  if (!item || item.price === null) {
+    return;
+  }
+
+  if (cart.hasItem(item.id)) {
+    cart.removeItem(item.id);
+  } else {
+    cart.addItem(item);
+  }
+});
 const basketElement = basketTemplate.content
   .querySelector<HTMLElement>(".basket")!
   .cloneNode(true) as HTMLElement;
@@ -49,13 +74,13 @@ const successTemplate =
 const successElement = successTemplate.content
   .querySelector<HTMLElement>(".order-success")!
   .cloneNode(true) as HTMLElement;
-const successButton = successElement.querySelector<HTMLButtonElement>(
-  ".order-success__close",
-)!;
 
-successButton.addEventListener("click", () => {
-  modal.close();
+const success = new Success(successElement, {
+  onClick: () => {
+    modal.close();
+  },
 });
+
 const basket = new Basket(basketElement, {
   onClick: () => {
     modal.content = orderElement;
@@ -68,15 +93,16 @@ const header = new Header(headerElement, () => {
   modal.open();
 });
 
-const orderForm = new Form(orderElement, events);
+const orderForm = new OrderForm(orderElement, events);
 const contactsElement = contactsTemplate.content
   .querySelector<HTMLFormElement>(".form")!
   .cloneNode(true) as HTMLFormElement;
 
-const contactsForm = new Form(contactsElement, events);
+const contactsForm = new ContactsForm(contactsElement, events);
 events.on<{ field: string; value: string }>("order.address:change", (data) => {
   buyer.setData({ address: data.value });
 });
+
 events.on("order:submit", () => {
   modal.content = contactsElement;
 });
@@ -92,6 +118,12 @@ events.on<{ field: string; value: string }>("contacts.phone:change", (data) => {
 });
 events.on("buyer:changed", () => {
   const errors = buyer.validate();
+  const buyerData = buyer.getData();
+
+  orderForm.address = buyerData.address;
+  orderForm.payment = buyerData.payment || null;
+  contactsForm.email = buyerData.email;
+  contactsForm.phone = buyerData.phone;
 
   orderForm.valid = !errors.payment && !errors.address;
 
@@ -107,12 +139,8 @@ events.on("buyer:changed", () => {
 });
 events.on("contacts:submit", () => {
   const buyerData = buyer.getData();
-  if (!buyerData.payment) {
-    return;
-  }
-
   const order: IOrder = {
-    payment: buyerData.payment,
+    payment: buyerData.payment as TPayment,
     address: buyerData.address,
     email: buyerData.email,
     phone: buyerData.phone,
@@ -120,22 +148,21 @@ events.on("contacts:submit", () => {
     items: cart.getItems().map((item) => item.id),
   };
 
-  api.post("/order/", order).then((result) => {
-    const successDescription = successElement.querySelector<HTMLElement>(
-      ".order-success__description",
-    )!;
+  kioskApi
+    .postOrder(order)
+    .then((result) => {
+      success.total = result.total;
 
-    successDescription.textContent = `Списано ${(result as IOrderResponse).total} синапсов`;
-
-    cart.clear();
-    buyer.clear();
-
-    orderForm.reset();
-    contactsForm.reset();
-    modal.content = successElement;
-    modal.open();
-  });
+      cart.clear();
+      buyer.clear();
+      modal.content = successElement;
+      modal.open();
+    })
+    .catch((error) => {
+      console.error("Order error:", error);
+    });
 });
+
 events.on<{ items: IProduct[] }>("items:changed", (data) => {
   const cards = data.items.map((item) => {
     const cardElement = cardCatalogTemplate.content
@@ -144,34 +171,26 @@ events.on<{ items: IProduct[] }>("items:changed", (data) => {
 
     const card = new CardCatalog(cardElement, {
       onClick: () => {
-        catalog.setSelectedProduct(item);
+        events.emit("card:select", { item });
       },
     });
+
     card.title = item.title;
     card.price = item.price;
-    card.image = CDN_URL + item.image;
+    card.image = item.image;
     return cardElement;
   });
   gallery.catalog = cards;
 });
+events.on<{ item: IProduct }>("card:select", (data) => {
+  catalog.setSelectedProduct(data.item);
+});
 events.on<{ product: IProduct }>("product:selected", (data) => {
   const item = data.product;
-
-  const previewElement = cardPreviewTemplate.content
-    .querySelector<HTMLElement>(".card")!
-    .cloneNode(true) as HTMLElement;
-  const preview = new CardPreview(previewElement, {
-    onClick: () => {
-      if (item.price === null) {
-        return;
-      }
-      cart.addItem(item);
-    },
-  });
-
   preview.title = item.title;
   preview.price = item.price;
-  preview.image = CDN_URL + item.image;
+  preview.image = item.image;
+  preview.imageAlt = item.title;
   preview.category = item.category;
   preview.description = item.description;
   modal.content = previewElement;
@@ -186,7 +205,7 @@ events.on<{ items: IProduct[] }>("cart:changed", (data) => {
       .cloneNode(true) as HTMLElement;
     const card = new CardBasket(basketItemElement, {
       onClick: () => {
-        cart.removeItem(item.id);
+        events.emit("basket:remove", { id: item.id });
       },
     });
     card.title = item.title;
@@ -197,7 +216,19 @@ events.on<{ items: IProduct[] }>("cart:changed", (data) => {
   basket.items = basketItems;
   basket.total = cart.getTotal();
 });
-
-api.get<{ items: IProduct[] }>("/product/").then((data) => {
-  catalog.setItems(data.items);
+events.on<{ id: string }>("basket:remove", (data) => {
+  cart.removeItem(data.id);
 });
+kioskApi
+  .getProducts()
+  .then((data) => {
+    const items = data.items.map((item) => ({
+      ...item,
+      image: CDN_URL + item.image,
+    }));
+
+    catalog.setItems(items);
+  })
+  .catch((error) => {
+    console.error("Products loading error:", error);
+  });

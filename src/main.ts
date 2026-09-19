@@ -61,6 +61,7 @@ events.on("preview:action", () => {
   } else {
     cart.addItem(item);
   }
+  modal.close();
 });
 const basketElement = basketTemplate.content
   .querySelector<HTMLElement>(".basket")!
@@ -77,18 +78,30 @@ const successElement = successTemplate.content
 
 const success = new Success(successElement, {
   onClick: () => {
-    modal.close();
+    events.emit("success:close");
   },
+});
+
+events.on("success:close", () => {
+  modal.close();
 });
 
 const basket = new Basket(basketElement, {
   onClick: () => {
-    modal.content = orderElement;
-    modal.open();
+    events.emit("order:open");
   },
 });
 
+events.on("order:open", () => {
+  modal.content = orderElement;
+  modal.open();
+});
+
 const header = new Header(headerElement, () => {
+  events.emit("basket:open");
+});
+
+events.on("basket:open", () => {
   modal.content = basketElement;
   modal.open();
 });

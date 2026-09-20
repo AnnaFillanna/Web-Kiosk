@@ -41,24 +41,24 @@ constructor(private events: IEvents) {}
     this.events.emit('buyer:changed', { data: this.getData() });
   }
   validate(): TBuyerErrors {
-    const errors: TBuyerErrors = {};
+  const errors: TBuyerErrors = {};
 
-    if (!this.payment) {
-      errors.payment = "Выберите способ оплаты";
-    }
-
-    if (!this.address.trim()) {
-      errors.address = "Укажите адрес";
-    }
-
-    if (!this.email.trim()) {
-      errors.email = "Укажите email";
-    }
-
-    if (!this.phone.trim()) {
-      errors.phone = "Укажите телефон";
-    }
-
-    return errors;
+  if (!this.payment) {
+    errors.payment = "Select a payment method";
   }
+
+  if (!this.address.trim()) {
+    errors.address = "Enter your address";
+  }
+
+  if (!this.email.trim()) {
+    errors.email = "Enter your email";
+  }
+
+  if (!this.phone.trim()) {
+    errors.phone = "Enter your phone number";
+  }
+
+  return errors;
+}
 }

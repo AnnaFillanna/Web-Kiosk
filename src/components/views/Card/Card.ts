@@ -22,6 +22,6 @@ export class Card extends Component<ICard> {
 
   set price(value: number | null) {
     this.priceElement.textContent =
-      value === null ? "Бесценно" : `${value} синапсов`;
+     value === null ? "Priceless" : `${value} synapses`;
   }
 }

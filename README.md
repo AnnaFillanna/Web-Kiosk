@@ -1,10 +1,10 @@
-# Web-Larёk
+# Web Kiosk
 
-Учебный проект интернет-магазина «Web-Larёk», реализованный на TypeScript.
+An educational Web Kiosk online store project implemented in TypeScript.
 
-Приложение позволяет просматривать каталог товаров, открывать подробную информацию о товаре, добавлять товары в корзину, оформлять заказ в два этапа и отправлять его на сервер.
+The application allows users to browse the product catalog, open detailed product information, add products to the cart, complete the checkout process in two steps, and submit the order to the server.
 
-## Стек
+## Tech Stack
 
 - TypeScript
 - Vite
@@ -13,120 +13,120 @@
 - REST API
 - npm
 
-## Установка и запуск
+## Installation and Setup
 
-Для работы необходимы Node.js и npm.
+Node.js and npm are required.
 
-Установка зависимостей:
+Install dependencies:
 
 ```bash
 npm install
 ```
 
-Запуск проекта в режиме разработки:
+Start the project in development mode:
 
 ```bash
 npm run dev
 ```
 
-Сборка проекта:
+Build the project:
 
 ```bash
 npm run build
 ```
 
-Локальный просмотр собранной версии:
+Preview the built version locally:
 
 ```bash
 npm run preview
 ```
 
-## Архитектура
+## Architecture
 
-Приложение построено на основе архитектурного паттерна MVP (Model–View–Presenter) с событийным взаимодействием компонентов через Event Broker.
+The application is built using the MVP (Model–View–Presenter) architectural pattern with event-driven interaction between components through an Event Broker.
 
-## Схема моделей данных
+## Data Model Diagram
 
-![Схема типов и моделей данных](docs/architecture.jpg)
+![Data types and models diagram](docs/architecture.jpg)
 
 ### Model
 
-Модели хранят состояние приложения и реализуют бизнес-логику:
+The models store the application state and implement the business logic:
 
-- `Catalog` — хранит каталог товаров и выбранный товар;
-- `Cart` — управляет товарами в корзине;
-- `Buyer` — хранит данные покупателя и выполняет их валидацию.
+- `Catalog` — stores the product catalog and the selected product;
+- `Cart` — manages products in the cart;
+- `Buyer` — stores customer data and validates it.
 
-При изменении состояния модели генерируют события через Event Broker.
+When the state changes, the models emit events through the Event Broker.
 
 ### View
 
-Компоненты представления отвечают за отображение данных и взаимодействие пользователя с интерфейсом.
+View components are responsible for displaying data and user interaction with the interface.
 
-Общая функциональность компонентов представления вынесена в базовый класс `Component`.
+Common functionality of the View components is implemented in the base `Component` class.
 
 ### Presenter
 
-Роль Presenter выполняет точка входа приложения `main.ts`.
+The role of the Presenter is performed by the application entry point `main.ts`.
 
-Presenter не хранит состояние приложения самостоятельно. Он координирует взаимодействие компонентов: получает события от представлений, вызывает необходимые методы моделей, реагирует на изменения состояния моделей и передаёт обновлённые данные в компоненты представления.
+The Presenter does not store the application state itself. It coordinates interaction between components: receives events from the Views, calls the required model methods, reacts to changes in the model state, and passes updated data to the View components.
 
-Также Presenter координирует получение каталога и отправку заказа через API.
+The Presenter also coordinates retrieving the catalog and submitting the order through the API.
 
-Основные задачи Presenter:
+Main responsibilities of the Presenter:
 
-- создаёт экземпляры моделей и компонентов представления;
-- подписывается на события Event Broker;
-- реагирует на действия пользователя;
-- вызывает методы моделей для изменения состояния;
-- реагирует на события изменения моделей;
-- передаёт данные из моделей в компоненты представления;
-- обновляет интерфейс;
-- координирует взаимодействие с API;
-- формирует и отправляет заказ на сервер.
+- creates instances of models and View components;
+- subscribes to Event Broker events;
+- reacts to user actions;
+- calls model methods to change the state;
+- reacts to model change events;
+- passes data from models to View components;
+- updates the interface;
+- coordinates interaction with the API;
+- creates and submits the order to the server.
 
 ### Event Broker
 
-Event Broker обеспечивает слабую связанность компонентов приложения.
+The Event Broker provides loose coupling between application components.
 
-Модели и представления не вызывают друг друга напрямую. Вместо этого они генерируют события, на которые подписывается Presenter.
+Models and Views do not call each other directly. Instead, they emit events that the Presenter subscribes to.
 
-## Основной сценарий работы
+## Main Application Flow
 
-1. Каталог товаров загружается с сервера.
-2. Полученные товары сохраняются в модели `Catalog`.
-3. Каталог отображается пользователю.
-4. При выборе товара открывается модальное окно с подробной информацией.
-5. Товар с доступной ценой можно добавить в корзину.
-6. Корзина отображает выбранные товары и общую стоимость, а Header — количество товаров.
-7. Пользователь переходит к оформлению заказа.
-8. На первом этапе выбирается способ оплаты и указывается адрес доставки.
-9. На втором этапе пользователь вводит email и номер телефона.
-10. Модель `Buyer` проверяет заполненность необходимых данных.
-11. На основе данных покупателя и корзины формируется заказ.
-12. Заказ отправляется на сервер.
-13. После успешного оформления отображается информация об успешной покупке.
-14. Корзина и данные покупателя очищаются для возможности оформления нового заказа, а представления обновляются через события изменения модели.
+1. The product catalog is loaded from the server.
+2. The received products are stored in the `Catalog` model.
+3. The catalog is displayed to the user.
+4. When a product is selected, a modal window with detailed information opens.
+5. A product with an available price can be added to the cart.
+6. The cart displays the selected products and the total price, while the Header displays the number of products.
+7. The user proceeds to checkout.
+8. At the first step, the payment method is selected and the delivery address is entered.
+9. At the second step, the user enters an email address and phone number.
+10. The `Buyer` model checks whether the required data has been filled in.
+11. An order is created based on the customer data and the cart.
+12. The order is sent to the server.
+13. After successful checkout, information about the successful purchase is displayed.
+14. The cart and customer data are cleared to allow a new order to be placed, and the Views are updated through model change events.
 
-Товары без указанной цены (`price: null`) недоступны для добавления в корзину.
+Products without a specified price (`price: null`) cannot be added to the cart.
 
-## Данные и типы
+## Data and Types
 
-Основные типы приложения описывают товары, данные покупателя и объекты, которыми приложение обменивается с сервером.
+The main application types describe products, customer data, and the objects exchanged between the application and the server.
 
 ### `TPayment`
 
-Допустимые способы оплаты:
+Supported payment methods:
 
 ```ts
 type TPayment = 'card' | 'cash';
 ```
 
-Пустая строка используется как начальное значение способа оплаты до выбора пользователем.
+An empty string is used as the initial payment method value until the user makes a selection.
 
 ### `IProduct`
 
-Описывает товар интернет-магазина:
+Describes a product in the online store:
 
 ```ts
 interface IProduct {
@@ -139,16 +139,16 @@ interface IProduct {
 }
 ```
 
-- `id` — уникальный идентификатор товара;
-- `description` — описание товара;
-- `image` — путь к изображению;
-- `title` — название товара;
-- `category` — категория товара;
-- `price` — цена товара или `null`, если товар нельзя приобрести.
+- `id` — unique product identifier;
+- `description` — product description;
+- `image` — path to the image;
+- `title` — product title;
+- `category` — product category;
+- `price` — product price or `null` if the product cannot be purchased.
 
 ### `IBuyer`
 
-Описывает данные покупателя:
+Describes customer data:
 
 ```ts
 interface IBuyer {
@@ -161,7 +161,7 @@ interface IBuyer {
 
 ### `TBuyerErrors`
 
-Описывает ошибки заполнения данных покупателя:
+Describes errors in the customer data:
 
 ```ts
 type TBuyerErrors = Partial<Record<keyof IBuyer, string>>;
@@ -169,7 +169,7 @@ type TBuyerErrors = Partial<Record<keyof IBuyer, string>>;
 
 ### `IProductsResponse`
 
-Описывает ответ сервера при получении каталога:
+Describes the server response when retrieving the catalog:
 
 ```ts
 interface IProductsResponse {
@@ -180,7 +180,7 @@ interface IProductsResponse {
 
 ### `IOrder`
 
-Описывает заказ, отправляемый на сервер:
+Describes the order sent to the server:
 
 ```ts
 interface IOrder {
@@ -193,11 +193,11 @@ interface IOrder {
 }
 ```
 
-Поле `items` содержит идентификаторы товаров, входящих в заказ.
+The `items` field contains the identifiers of the products included in the order.
 
 ### `IOrderResponse`
 
-Описывает ответ сервера после успешного оформления заказа:
+Describes the server response after successful checkout:
 
 ```ts
 interface IOrderResponse {
@@ -206,216 +206,216 @@ interface IOrderResponse {
 }
 ```
 
-## Модели данных
+## Data Models
 
 ### `Catalog`
 
-Модель каталога хранит список товаров и выбранный пользователем товар.
+The catalog model stores the list of products and the product selected by the user.
 
-Основные методы:
+Main methods:
 
-- `setItems()` — сохраняет каталог товаров;
-- `getItems()` — возвращает каталог;
-- `getItem()` — возвращает товар по идентификатору;
-- `setSelectedProduct()` — сохраняет выбранный товар;
-- `getSelectedProduct()` — возвращает выбранный товар.
+- `setItems()` — stores the product catalog;
+- `getItems()` — returns the catalog;
+- `getItem()` — returns a product by its identifier;
+- `setSelectedProduct()` — stores the selected product;
+- `getSelectedProduct()` — returns the selected product.
 
-При изменении данных модель сообщает об этом через Event Broker.
+When the data changes, the model reports it through the Event Broker.
 
 ### `Cart`
 
-Модель корзины хранит товары, выбранные пользователем.
+The cart model stores the products selected by the user.
 
-Основные методы:
+Main methods:
 
-- `getItems()` — возвращает товары корзины;
-- `addItem()` — добавляет товар;
-- `removeItem()` — удаляет товар;
-- `clear()` — очищает корзину;
-- `getTotal()` — вычисляет общую стоимость;
-- `getCount()` — возвращает количество товаров;
-- `hasItem()` — проверяет наличие товара в корзине.
+- `getItems()` — returns the products in the cart;
+- `addItem()` — adds a product;
+- `removeItem()` — removes a product;
+- `clear()` — clears the cart;
+- `getTotal()` — calculates the total price;
+- `getCount()` — returns the number of products;
+- `hasItem()` — checks whether a product is present in the cart.
 
-После изменения содержимого корзины модель генерирует событие `cart:changed`.
+After the cart contents change, the model emits the `cart:changed` event.
 
 ### `Buyer`
 
-Модель покупателя хранит данные, необходимые для оформления заказа.
+The customer model stores the data required to place an order.
 
-Основные методы:
+Main methods:
 
-- `setData()` — обновляет данные покупателя;
-- `getData()` — возвращает текущие данные;
-- `clear()` — очищает данные;
-- `validate()` — проверяет заполненность обязательных полей.
+- `setData()` — updates customer data;
+- `getData()` — returns the current data;
+- `clear()` — clears the data;
+- `validate()` — checks whether the required fields are filled in.
 
-При изменении данных покупателя модель сообщает об этом через Event Broker, благодаря чему состояние форм и сообщения об ошибках могут обновляться в интерфейсе.
+When the customer data changes, the model reports it through the Event Broker, allowing the form state and error messages to be updated in the interface.
 
-## Компоненты представления
+## View Components
 
 ### `Component`
 
-Базовый абстрактный класс для компонентов представления.
+Base abstract class for View components.
 
-Содержит общую функциональность для работы с DOM-элементами.
+Contains common functionality for working with DOM elements.
 
-Основные методы:
+Main methods:
 
-- `setImage()` — устанавливает изображение и альтернативный текст;
-- `render()` — обновляет данные компонента и возвращает его корневой DOM-элемент.
+- `setImage()` — sets the image and alternative text;
+- `render()` — updates the component data and returns its root DOM element.
 
 ### `Gallery`
 
-Отвечает за отображение каталога товаров.
+Responsible for displaying the product catalog.
 
-Основная функциональность:
+Main functionality:
 
-- получает массив DOM-элементов карточек;
-- отображает карточки товаров в контейнере каталога.
+- receives an array of card DOM elements;
+- displays product cards in the catalog container.
 
 ### `Card`
 
-Базовый класс представления карточки товара.
+Base View class for a product card.
 
-Основная функциональность:
+Main functionality:
 
-- отображает название товара;
-- отображает цену товара.
+- displays the product title;
+- displays the product price.
 
-Используется как родительский класс для специализированных карточек.
+Used as the parent class for specialized cards.
 
 ### `CardCatalog`
 
-Представляет карточку товара в каталоге.
+Represents a product card in the catalog.
 
-Основная функциональность:
+Main functionality:
 
-- отображает название, цену и изображение товара;
-- обрабатывает нажатие пользователя на карточку;
-- вызывает переданный обработчик действия пользователя.
+- displays the product title, price, and image;
+- handles the user's click on the card;
+- calls the provided user action handler.
 
 ### `CardPreview`
 
-Представляет подробную информацию о выбранном товаре.
+Represents detailed information about the selected product.
 
-Основная функциональность:
+Main functionality:
 
-- отображает изображение товара и его альтернативное описание;
-- отображает категорию и описание;
-- отображает название и цену товара;
-- обрабатывает нажатие пользователя на кнопку действия с товаром;
-- вызывает переданный обработчик действия пользователя.
+- displays the product image and its alternative description;
+- displays the category and description;
+- displays the product title and price;
+- handles the user's click on the product action button;
+- calls the provided user action handler.
 
-Решение о добавлении или удалении товара из корзины принимает Presenter с учётом текущего состояния модели `Cart`.
+The decision to add or remove a product from the cart is made by the Presenter based on the current state of the `Cart` model.
 
 ### `CardBasket`
 
-Представляет отдельный товар в корзине.
+Represents an individual product in the cart.
 
-Основная функциональность:
+Main functionality:
 
-- отображает название и цену товара;
-- отображает порядковый номер товара;
-- обрабатывает нажатие пользователя на кнопку удаления;
-- вызывает переданный обработчик действия пользователя.
+- displays the product title and price;
+- displays the product's position number;
+- handles the user's click on the remove button;
+- calls the provided user action handler.
 
 ### `Basket`
 
-Отвечает за отображение корзины.
+Responsible for displaying the cart.
 
-Основная функциональность:
+Main functionality:
 
-- отображает список товаров;
-- отображает общую стоимость заказа;
-- управляет состоянием кнопки оформления заказа.
+- displays the list of products;
+- displays the total order price;
+- controls the state of the checkout button.
 
 ### `Header`
 
-Отвечает за отображение состояния корзины в шапке страницы.
+Responsible for displaying the cart state in the page header.
 
-Основная функциональность:
+Main functionality:
 
-- отображает количество товаров в корзине;
-- обрабатывает действие пользователя для открытия корзины.
+- displays the number of products in the cart;
+- handles the user action for opening the cart.
 
 ### `Modal`
 
-Управляет модальным окном приложения.
+Controls the application's modal window.
 
-Основная функциональность:
+Main functionality:
 
-- устанавливает содержимое модального окна;
-- открывает модальное окно;
-- закрывает модальное окно;
-- обрабатывает закрытие окна пользователем.
+- sets the content of the modal window;
+- opens the modal window;
+- closes the modal window;
+- handles the user closing the window.
 
 ### `Form`
 
-Базовый класс представления формы.
+Base View class for a form.
 
-Основная функциональность:
+Main functionality:
 
-- обрабатывает ввод данных пользователем;
-- генерирует события изменения полей и отправки формы;
-- управляет состоянием кнопки отправки;
-- отображает сообщения об ошибках.
+- handles user data input;
+- emits field change and form submission events;
+- controls the state of the submit button;
+- displays error messages.
 
 ### `OrderForm`
 
-Представляет первый этап оформления заказа.
+Represents the first step of the checkout process.
 
-Основная функциональность:
+Main functionality:
 
-- отображает и обновляет адрес доставки;
-- отображает выбранный способ оплаты;
-- обрабатывает выбор способа оплаты пользователем.
+- displays and updates the delivery address;
+- displays the selected payment method;
+- handles the user's selection of the payment method.
 
 ### `ContactsForm`
 
-Представляет второй этап оформления заказа.
+Represents the second step of the checkout process.
 
-Основная функциональность:
+Main functionality:
 
-- отображает и обновляет email покупателя;
-- отображает и обновляет номер телефона.
+- displays and updates the customer's email;
+- displays and updates the phone number.
 
 ### `Success`
 
-Представляет сообщение об успешном оформлении заказа.
+Represents the successful order confirmation message.
 
-Основная функциональность:
+Main functionality:
 
-- отображает итоговую стоимость заказа;
-- обрабатывает закрытие сообщения об успешной покупке.
+- displays the final order price;
+- handles closing the successful purchase message.
 
-## Работа с API
+## API Integration
 
-Для взаимодействия с сервером используется базовый класс `Api` и класс `KioskApi`, предоставляющий методы для работы с API интернет-магазина.
+The base `Api` class and the `KioskApi` class are used to interact with the server, providing methods for working with the online store API.
 
-Основные операции приложения:
+Main application operations:
 
 ```text
 GET /product/
 ```
 
-Получение каталога товаров.
+Retrieving the product catalog.
 
 ```text
 POST /order/
 ```
 
-Отправка оформленного заказа.
+Submitting the completed order.
 
-Модели приложения не выполняют HTTP-запросы самостоятельно. Взаимодействие с API координируется Presenter в `main.ts` через экземпляр `KioskApi`.
+The application models do not perform HTTP requests themselves. Interaction with the API is coordinated by the Presenter in `main.ts` through an instance of `KioskApi`.
 
-## Разделение ответственности
+## Separation of Responsibilities
 
-Архитектура приложения разделяет ответственность между слоями:
+The application architecture separates responsibilities between layers:
 
-- Model хранит состояние и бизнес-логику;
-- View отвечает за отображение данных и действия пользователя;
-- Presenter координирует взаимодействие Model, View и API;
-- Event Broker обеспечивает событийное взаимодействие компонентов;
-- `Api` и `KioskApi` отвечают за взаимодействие с сервером.
+- Model stores the state and business logic;
+- View is responsible for displaying data and user actions;
+- Presenter coordinates interaction between Model, View, and API;
+- Event Broker provides event-driven interaction between components;
+- `Api` and `KioskApi` are responsible for interaction with the server.
 
-Такое разделение уменьшает связанность компонентов и позволяет изменять представление, бизнес-логику и сетевое взаимодействие независимо друг от друга.
+This separation reduces coupling between components and allows the presentation, business logic, and network interaction to be changed independently of each other.

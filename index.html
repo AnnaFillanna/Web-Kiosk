@@ -2,21 +2,26 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <link rel="icon" href="/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
 
-    <title>Vite + TS</title>
+    <title>Web-Larek</title>
   </head>
+
   <body class="page">
     <div class="page__wrapper">
       <header class="header">
         <div class="header__container">
           <a class="header__logo" href="/">
-            <img class="header__logo-image" src="./src/images/logo.svg" alt="Web-Larek! logo" />
+            <img
+              class="header__logo-image"
+              src="/src/images/kiosk-logo.png"
+              alt="Kiosk logo"
+            />
           </a>
           <button class="header__basket">
             <span class="header__basket-counter">0</span>
@@ -29,27 +34,25 @@
 
     <div class="modal" id="modal-container">
       <div class="modal__container">
-        <button class="modal__close" aria-label="закрыть"></button>
-        <div class="modal__content">
-
-        </div>
+        <button class="modal__close" aria-label="Close"></button>
+        <div class="modal__content"></div>
       </div>
     </div>
 
     <template id="success">
       <div class="order-success">
-        <h2 class="order-success__title">Заказ оформлен</h2>
-        <p class="order-success__description">Списано 0 синапсов</p>
-        <button class="button order-success__close">За новыми покупками!</button>
+        <h2 class="order-success__title">Order placed</h2>
+        <p class="order-success__description">0 synapses charged</p>
+        <button class="button order-success__close">Continue shopping!</button>
       </div>
     </template>
 
     <template id="card-catalog">
       <button class="gallery__item card">
-        <span class="card__category card__category_soft">софт-скил</span>
-        <h2 class="card__title">+1 час в сутках</h2>
+        <span class="card__category card__category_soft">soft skill</span>
+        <h2 class="card__title">+1 hour a day</h2>
         <img class="card__image" src="./src/images/Subtract.svg" alt="" />
-        <span class="card__price">750 синапсов</span>
+        <span class="card__price">750 synapses</span>
       </button>
     </template>
 
@@ -57,12 +60,14 @@
       <div class="card card_full">
         <img class="card__image" src="./src/images/Subtract.svg" alt="" />
         <div class="card__column">
-          <span class="card__category card__category_other">другое</span>
-          <h2 class="card__title">Бэкенд-антистресс</h2>
-          <p class="card__text">Если планируете решать задачи в тренажёре, берите два.</p>
+          <span class="card__category card__category_other">other</span>
+          <h2 class="card__title">Backend Anti-Stress</h2>
+          <p class="card__text">
+            If you're planning to solve tasks in the trainer, take two.
+          </p>
           <div class="card__row">
-            <button class="button card__button">В корзину</button>
-            <span class="card__price">1000 синапсов</span>
+            <button class="button card__button">Add to cart</button>
+            <span class="card__price">1000 synapses</span>
           </div>
         </div>
       </div>
@@ -71,21 +76,22 @@
     <template id="card-basket">
       <li class="basket__item card card_compact">
         <span class="basket__item-index">1</span>
-        <span class="card__title">Фреймворк куки судьбы</span>
-        <span class="card__price">2500 синапсов</span>
-        <button class="basket__item-delete card__button" aria-label="удалить"></button>
+        <span class="card__title">Fortune Cookie Framework</span>
+        <span class="card__price">2500 synapses</span>
+        <button
+          class="basket__item-delete card__button"
+          aria-label="Delete"
+        ></button>
       </li>
     </template>
 
     <template id="basket">
       <div class="basket">
-        <h2 class="modal__title">Корзина</h2>
-        <ul class="basket__list">
-
-        </ul>
+        <h2 class="modal__title">Cart</h2>
+        <ul class="basket__list"></ul>
         <div class="modal__actions">
-          <button class="button basket__button">Оформить</button>
-          <span class="basket__price">0 синапсов</span>
+          <button class="button basket__button">Checkout</button>
+          <span class="basket__price">0 synapses</span>
         </div>
       </div>
     </template>
@@ -94,19 +100,32 @@
       <form class="form" name="order">
         <div class="order">
           <div class="order__field">
-            <h2 class="modal__title">Способ оплаты</h2>
+            <h2 class="modal__title">Payment method</h2>
             <div class="order__buttons">
-              <button name="card" type="button" class="button button_alt">Онлайн</button>
-              <button name="cash" type="button" class="button button_alt">При получении</button>
+              <button name="card" type="button" class="button button_alt">
+                Online
+              </button>
+              <button name="cash" type="button" class="button button_alt">
+                On delivery
+              </button>
             </div>
           </div>
+
           <label class="order__field">
-            <span class="form__label modal__title">Адрес доставки</span>
-            <input name="address" class="form__input" type="text" placeholder="Введите адрес" />
+            <span class="form__label modal__title">Delivery address</span>
+            <input
+              name="address"
+              class="form__input"
+              type="text"
+              placeholder="Enter address"
+            />
           </label>
         </div>
+
         <div class="modal__actions">
-          <button type="submit" disabled class="button order__button">Далее</button>
+          <button type="submit" disabled class="button order__button">
+            Next
+          </button>
           <span class="form__errors"></span>
         </div>
       </form>
@@ -117,15 +136,27 @@
         <div class="order">
           <label class="order__field">
             <span class="form__label modal__title">Email</span>
-            <input name="email" class="form__input" type="text" placeholder="Введите Email" />
+            <input
+              name="email"
+              class="form__input"
+              type="text"
+              placeholder="Enter email"
+            />
           </label>
+
           <label class="order__field">
-            <span class="form__label modal__title">Телефон</span>
-            <input name="phone" class="form__input" type="text" placeholder="+7 (" />
+            <span class="form__label modal__title">Phone</span>
+            <input
+              name="phone"
+              class="form__input"
+              type="text"
+              placeholder="+49 "
+            />
           </label>
         </div>
+
         <div class="modal__actions">
-          <button type="submit" disabled class="button">Оплатить</button>
+          <button type="submit" disabled class="button">Pay</button>
           <span class="form__errors"></span>
         </div>
       </form>

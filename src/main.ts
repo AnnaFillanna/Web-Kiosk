@@ -232,13 +232,78 @@ events.on<{ items: IProduct[] }>("cart:changed", (data) => {
 events.on<{ id: string }>("basket:remove", (data) => {
   cart.removeItem(data.id);
 });
+const productTranslations: Record<
+  string,
+  { title: string; description: string; category: string }
+> = {
+  "854cef69-976d-4c2a-a18c-2aa45046c390": {
+    title: "+1 hour a day",
+    description: "If you're planning to solve tasks in the trainer, take two.",
+    category: "soft skill",
+  },
+  "c101ab44-ed99-4a54-990d-47aa2bb4e7d9": {
+    title: "HEX Lollipop",
+    description:
+      "Lick this lollipop to instantly remember and recognize any CSS color code.",
+    category: "other",
+  },
+  "b06cde61-912f-4663-9751-09956c0eed67": {
+    title: "Mom Timer",
+    description:
+      "It will keep an eye on you and stop you from procrastinating.",
+    category: "soft skill",
+  },
+  "412bcf81-7e75-4e70-bdb9-d3c73c9803b7": {
+    title: "Framework Fortune Cookies",
+    description:
+      "Open these cookies to find out which framework you should learn next.",
+    category: "additional",
+  },
+  "1c521d84-c48d-48fa-8cfb-9d911fa515fd": {
+  title: "Mute the Cat Button",
+  description: "If the cat is yelling, press the button.",
+  category: "button",
+},
+"f3867296-45c7-4603-bd34-29cea3a061d5": {
+  title: "BEM Pill",
+  description:
+    "To learn how to name modifiers correctly — you can't do without this.",
+  category: "other",
+},
+"54df7dcb-1213-4b3c-ab61-92ed5f845535": {
+  title: "Portable Teleporter",
+  description: "Change your location to search for a job.",
+  category: "other",
+},
+"6a834fb8-350a-440c-ab55-d0e9b959b6e3": {
+  title: "Pocket Micro-Universe",
+  description: "Gives you time to learn React, OOP, and backend development.",
+  category: "other",
+},
+"48e86fc0-ca99-4e13-b164-b98d65928b53": {
+  title: "UI/UX Pencil",
+  description: "A very useful skill for a frontend developer. No kidding.",
+  category: "hard skill",
+},
+"90973ae5-285c-4b6f-a6d0-65d1d760b102": {
+  title: "Backend Anti-Stress",
+  description: "Squeeze the ball to reduce stress from backend development.",
+  category: "other",
+},
+};
 kioskApi
   .getProducts()
   .then((data) => {
-    const items = data.items.map((item) => ({
-      ...item,
-      image: CDN_URL + item.image,
-    }));
+    console.log(data.items);
+    const items = data.items.map((item) => {
+      const translation = productTranslations[item.id];
+
+      return {
+        ...item,
+        ...(translation ?? {}),
+        image: CDN_URL + item.image,
+      };
+    });
 
     catalog.setItems(items);
   })
